@@ -19,10 +19,13 @@ package bixo.datum;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.hadoop.mapred.JobConf;
 import org.junit.Assert;
 import org.junit.Test;
 
 import bixo.utils.DiskQueue;
+import cascading.flow.FlowProcess;
+import cascading.flow.FlowSession;
 import cascading.flow.hadoop.HadoopFlowProcess;
 import cascading.scheme.hadoop.SequenceFile;
 import cascading.tap.hadoop.Lfs;
@@ -31,6 +34,7 @@ import cascading.tuple.TupleEntryCollector;
 import com.bixolabs.cascading.PartitioningKey;
 
 
+@SuppressWarnings("deprecation")
 public class ScoredUrlDatumTest {
 
     @Test
@@ -61,7 +65,8 @@ public class ScoredUrlDatumTest {
         FetchSetDatum pfd = new FetchSetDatum(urls, fetchTime, 1000, groupingKey.getValue(), groupingKey.getRef());
         
         Lfs in = new Lfs(new SequenceFile(FetchSetDatum.FIELDS), "build/test/ScoredUrlDatumTest/testCascadingSerialization/in", true);
-        TupleEntryCollector write = in.openForWrite(new HadoopFlowProcess());
+        FlowProcess flowProcess = new HadoopFlowProcess( FlowSession.NULL, new JobConf(), true);
+        TupleEntryCollector write = in.openForWrite( flowProcess );
         write.add(pfd.getTuple());
         write.close();
     }

@@ -44,6 +44,7 @@ import bixo.urls.SimpleUrlNormalizer;
 import cascading.flow.Flow;
 import cascading.flow.FlowConnector;
 import cascading.flow.FlowProcess;
+import cascading.flow.hadoop.HadoopFlowConnector;
 import cascading.operation.BaseOperation;
 import cascading.operation.Buffer;
 import cascading.operation.BufferCall;
@@ -52,9 +53,9 @@ import cascading.pipe.Each;
 import cascading.pipe.Every;
 import cascading.pipe.GroupBy;
 import cascading.pipe.Pipe;
-import cascading.scheme.SequenceFile;
-import cascading.scheme.TextLine;
-import cascading.tap.Hfs;
+import cascading.scheme.hadoop.SequenceFile;
+import cascading.scheme.hadoop.TextLine;
+import cascading.tap.hadoop.Hfs;
 import cascading.tap.Tap;
 import cascading.tuple.Fields;
 import cascading.tuple.TupleEntry;
@@ -184,7 +185,7 @@ public class JDBCCrawlWorkflow {
         sinkMap.put(outputPipe.getName(), urlSink);
         
         // Finally we can run it.
-        FlowConnector flowConnector = new FlowConnector(HadoopUtils.getDefaultProperties(JDBCCrawlWorkflow.class, debug, conf));
+        FlowConnector flowConnector = new HadoopFlowConnector(HadoopUtils.getDefaultProperties(JDBCCrawlWorkflow.class, debug, conf));
         return flowConnector.connect(inputSource, sinkMap, statusPipe, fetchPipe.getContentTailPipe(), parsePipe.getTailPipe(), outputPipe);
             
     }

@@ -13,14 +13,15 @@ import bixo.urls.SimpleUrlValidator;
 import cascading.flow.Flow;
 import cascading.flow.FlowConnector;
 import cascading.flow.FlowProcess;
+import cascading.flow.hadoop.HadoopFlowConnector;
 import cascading.operation.BaseOperation;
 import cascading.operation.Function;
 import cascading.operation.FunctionCall;
 import cascading.pipe.Each;
 import cascading.pipe.Pipe;
-import cascading.scheme.SequenceFile;
-import cascading.scheme.TextLine;
-import cascading.tap.Hfs;
+import cascading.scheme.hadoop.SequenceFile;
+import cascading.scheme.hadoop.TextLine;
+import cascading.tap.hadoop.Hfs;
 import cascading.tap.Tap;
 import cascading.tuple.Fields;
 
@@ -84,7 +85,7 @@ public class UrlImporter {
 
             Tap urlSink = new Hfs(new SequenceFile(CrawlDbDatum.FIELDS), _destDirPath.toString(), true);
 
-            FlowConnector flowConnector = new FlowConnector(HadoopUtils.getDefaultProperties(UrlImporter.class, debug, conf));
+            FlowConnector flowConnector = new HadoopFlowConnector(HadoopUtils.getDefaultProperties(UrlImporter.class, debug, conf));
             Flow flow = flowConnector.connect(urlSource, urlSink, importPipe);
             flow.complete();
         } catch (Exception e) {

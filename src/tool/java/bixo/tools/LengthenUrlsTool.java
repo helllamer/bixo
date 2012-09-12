@@ -31,11 +31,12 @@ import bixo.operations.UrlLengthener;
 import bixo.utils.ConfigUtils;
 import cascading.flow.Flow;
 import cascading.flow.FlowConnector;
+import cascading.flow.hadoop.HadoopFlowConnector;
 import cascading.operation.Debug;
 import cascading.pipe.Each;
 import cascading.pipe.Pipe;
-import cascading.scheme.TextLine;
-import cascading.tap.Lfs;
+import cascading.scheme.hadoop.TextLine;
+import cascading.tap.hadoop.Lfs;
 import cascading.tap.SinkTap;
 import cascading.tuple.Fields;
 
@@ -108,7 +109,7 @@ public class LengthenUrlsTool {
             
             JobConf conf = HadoopUtils.getDefaultJobConf();
             Properties props = HadoopUtils.getDefaultProperties(LengthenUrlsTool.class, false, conf);
-            FlowConnector flowConnector = new FlowConnector(props);
+            FlowConnector flowConnector = new HadoopFlowConnector(props);
             Flow flow = flowConnector.connect(sourceTap, sinkTap, pipe);
 
             flow.complete();

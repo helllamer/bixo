@@ -17,6 +17,7 @@
 package bixo.examples.crawl;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
@@ -26,16 +27,20 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
+import org.mortbay.log.Log;
 
 import bixo.config.FetcherPolicy;
-import bixo.config.UserAgent;
 import bixo.config.FetcherPolicy.FetcherMode;
+import bixo.config.UserAgent;
 import bixo.datum.UrlStatus;
 import bixo.urls.BaseUrlFilter;
 import bixo.urls.SimpleUrlNormalizer;
 import bixo.utils.CrawlDirUtils;
 import cascading.flow.Flow;
-import cascading.flow.PlannerException;
+import cascading.flow.FlowProcess;
+import cascading.flow.FlowSession;
+//import cascading.flow.PlannerException;
+import cascading.flow.hadoop.HadoopFlowProcess;
 import cascading.tap.Tap;
 import cascading.tuple.TupleEntryCollector;
 
@@ -55,7 +60,7 @@ public class JDBCCrawlTool {
         System.exit(-1);
     }
 
-    // Create log output file in loop directory.
+    // Create log output file (in the local file system).
     private static void setLoopLoggerFile(String outputDirName, int loopNumber) {
         Logger rootLogger = Logger.getRootLogger();
 
@@ -76,12 +81,28 @@ public class JDBCCrawlTool {
             appender.activateOptions();
         }
     }
+    
+    private static void validateDomain(String domain, CmdLineParser parser) {
+        if (domain.startsWith("http")) {
+            System.err.println("The target domain should be specified as just the host, without the http protocol: " + domain);
+            printUsageAndExit(parser);
+        }
+        
+        if (!domain.equals("localhost") && (domain.split("\\.").length < 2)) {
+            System.err.println("The target domain should be a valid paid-level domain or subdomain of the same: " + domain);
+            printUsageAndExit(parser);
+        }
+        
+    }
+
 
     private static void importOneDomain(String targetDomain, Tap urlSink, JobConf conf) throws IOException {
 
         TupleEntryCollector writer;
         try {
-            writer = urlSink.openForWrite(conf);
+            //writer = urlSink.openForWrite(conf);
+        	FlowProcess flowProcess = new HadoopFlowProcess( FlowSession.NULL, conf, true );
+            writer = urlSink.openForWrite(flowProcess);
             SimpleUrlNormalizer normalizer = new SimpleUrlNormalizer();
             CrawlDbDatum datum = new CrawlDbDatum(normalizer.normalize("http://" + targetDomain), 0, 0, UrlStatus.UNFETCHED, 0);
 
@@ -91,6 +112,7 @@ public class JDBCCrawlTool {
             throw e;
         }
     }
+
 
     public static void main(String[] args) {
         JDBCCrawlToolOptions options = new JDBCCrawlToolOptions();
@@ -105,16 +127,9 @@ public class JDBCCrawlTool {
 
         // Before we get too far along, see if the domain looks valid.
         String domain = options.getDomain();
-        if (domain.startsWith("http")) {
-            System.err.println("The target domain should be specified as just the host, without the http protocol: " + domain);
-            printUsageAndExit(parser);
+        if (domain != null) {
+            validateDomain(domain, parser);
         }
-
-        if (!domain.equals("localhost") && (domain.split("\\.").length < 2)) {
-            System.err.println("The target domain should be a valid paid-level domain or subdomain of the same: " + domain);
-            printUsageAndExit(parser);
-        }
-
         String outputDirName = options.getOutputDir();
         if (options.isDebugLogging()) {
             System.setProperty("bixo.root.level", "DEBUG");
@@ -125,6 +140,11 @@ public class JDBCCrawlTool {
         if (options.getLoggingAppender() != null) {
             // Set console vs. DRFA vs. something else
             System.setProperty("bixo.appender", options.getLoggingAppender());
+        }
+
+        String logsDir = options.getLogsDir();
+        if (!logsDir.endsWith("/")) {
+            logsDir = logsDir + "/";
         }
 
         try {
@@ -150,9 +170,13 @@ public class JDBCCrawlTool {
                 fs.mkdirs(outputPath);
 
                 Path curLoopDir = CrawlDirUtils.makeLoopDir(fs, outputPath, 0);
-                String curLoopDirName = curLoopDir.toUri().toString();
-                setLoopLoggerFile(curLoopDirName, 0);
+                String curLoopDirName = curLoopDir.getName();
+                setLoopLoggerFile(logsDir + curLoopDirName, 0);
 
+                if (domain == null) {
+                    System.err.println("For a new crawl the domain needs to be specified" + domain);
+                    printUsageAndExit(parser);
+                }
                 importOneDomain(domain, JDBCTapFactory.createUrlsSinkJDBCTap(options.getDbLocation()), conf);
             }
 
@@ -178,7 +202,25 @@ public class JDBCCrawlTool {
             long targetEndTime = hasEndTime ? 
                             System.currentTimeMillis() + (crawlDurationInMinutes * CrawlConfig.MILLISECONDS_PER_MINUTE) : FetcherPolicy.NO_CRAWL_END_TIME;
 
-            BaseUrlFilter urlFilter = new DomainUrlFilter(domain);
+            // By setting up a url filter we only deal with urls that we want to
+            // instead of all the urls that we extract.
+            BaseUrlFilter urlFilter = null;
+            List<String> patterns = null;
+            String regexUrlFiltersFile = options.getRegexUrlFiltersFile();
+            if (regexUrlFiltersFile != null) {
+                patterns = RegexUrlFilter.getUrlFilterPatterns(regexUrlFiltersFile);
+            } else {
+                patterns = RegexUrlFilter.getDefaultUrlFilterPatterns();
+                if (domain != null) {
+                    String domainPatterStr = "+(?i)^(http|https)://([a-z0-9]*\\.)*" + domain;
+                    patterns.add(domainPatterStr);
+                } else {
+                    String protocolPatterStr = "+(?i)^(http|https)://*";
+                    patterns.add(protocolPatterStr);
+                    Log.warn("Defaulting to basic url regex filtering (just suffix and protocol");
+                }
+            }
+            urlFilter = new RegexUrlFilter(patterns.toArray(new String[patterns.size()]));
 
             // Now we're ready to start looping, since we've got our current settings
             for (int curLoop = startLoop + 1; curLoop <= endLoop; curLoop++) {
@@ -192,8 +234,8 @@ public class JDBCCrawlTool {
                 }
 
                 Path curLoopDir = CrawlDirUtils.makeLoopDir(fs, outputPath, curLoop);
-                String curLoopDirName = curLoopDir.toUri().toString();
-                setLoopLoggerFile(curLoopDirName, curLoop);
+                String curLoopDirName = curLoopDir.getName();
+                setLoopLoggerFile(logsDir+curLoopDirName, curLoop);
 
                 Flow flow = JDBCCrawlWorkflow.createFlow(inputPath, curLoopDir, userAgent, defaultPolicy, urlFilter, 
                                 options.getMaxThreads(), options.isDebugLogging(), options.getDbLocation());
@@ -203,11 +245,11 @@ public class JDBCCrawlTool {
                 // Input for the next round is our current output
                 inputPath = curLoopDir;
             }
-        } catch (PlannerException e) {
-            e.writeDOT("build/failed-flow.dot");
-            System.err.println("PlannerException: " + e.getMessage());
-            e.printStackTrace(System.err);
-            System.exit(-1);
+//        } catch (PlannerException e) {
+//            e.writeDOT("build/failed-flow.dot");
+//            System.err.println("PlannerException: " + e.getMessage());
+//            e.printStackTrace(System.err);
+//            System.exit(-1);
         } catch (Throwable t) {
             System.err.println("Exception running tool: " + t.getMessage());
             t.printStackTrace(System.err);
