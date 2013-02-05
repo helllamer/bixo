@@ -109,14 +109,12 @@ public class Outlink implements Writable {
 		return true;
 	}
     
-    @Override
     public void readFields(DataInput in) throws IOException {
         _toUrl = in.readUTF();
         _anchorText = in.readUTF();
         _relAttributes = in.readUTF();
     }
 
-    @Override
     public void write(DataOutput out) throws IOException {
         out.writeUTF(_toUrl);
         out.writeUTF(_anchorText);

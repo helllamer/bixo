@@ -192,7 +192,6 @@ public class DemoWebMiningWorkflowTest {
         } else {
             sourceTap = new Hfs(new SequenceFile(fields), dataPath.toString(), false);
         }
-        
         TupleEntryIterator tupleEntryIterator = sourceTap.openForRead(new HadoopFlowProcess(HadoopUtils.getDefaultJobConf()));
         int numEntries = 0;
         while (tupleEntryIterator.hasNext()) {

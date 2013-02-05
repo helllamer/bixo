@@ -18,7 +18,6 @@ package bixo.examples.crawl;
 
 import java.io.BufferedReader;
 import java.io.DataInputStream;
-import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -102,22 +101,10 @@ public class RegexUrlFilter extends BaseUrlFilter {
     
 
     public static List<String> getDefaultUrlFilterPatterns() throws IOException {
-    	
-    	return new ArrayList<String>( Arrays.asList(new String[] {
-		"-(?i)\\.(pdf|zip|gzip|gz|sit|bz|bz2|tar|tgz|exe)$"}) );
-
-    	
-    	/*
-    	String filterFile = "regex-url-filters.txt";
-    	File file = new File( filterFile );
-    	System.out.println("abs:" + file.getAbsolutePath() );
-
-        //InputStream is = RegexUrlFilter.class.getResourceAsStream("/regex-url-filters.txt");
-    	InputStream is = RegexUrlFilter.class.getResourceAsStream( filterFile );
+        InputStream is = RegexUrlFilter.class.getResourceAsStream("/regex-url-filters.txt");
         DataInputStream in = new DataInputStream(is);
         BufferedReader reader = new BufferedReader(new InputStreamReader(in));
         return readFilters(reader);
-        */
     }
 
     public static List<String> getUrlFilterPatterns(String urlFiltersFile) throws IOException  {

@@ -16,9 +16,9 @@
  */
 package bixo.examples.crawl;
 
-import java.util.Arrays;
 import java.util.List;
 
+import cascading.flow.hadoop.HadoopFlowProcess;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.mapred.JobConf;
@@ -27,7 +27,7 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
-import org.mortbay.log.Log;
+import com.scaleunlimited.cascading.hadoop.HadoopUtils;
 
 import bixo.config.FetcherPolicy;
 import bixo.config.FetcherPolicy.FetcherMode;
@@ -37,21 +37,17 @@ import bixo.urls.BaseUrlFilter;
 import bixo.urls.SimpleUrlNormalizer;
 import bixo.utils.CrawlDirUtils;
 import cascading.flow.Flow;
-import cascading.flow.FlowProcess;
-import cascading.flow.FlowSession;
-import cascading.flow.hadoop.HadoopFlowProcess;
 import cascading.flow.planner.PlannerException;
 import cascading.scheme.hadoop.SequenceFile;
 import cascading.tap.hadoop.Hfs;
 import cascading.tap.Tap;
 import cascading.tuple.TupleEntryCollector;
 
-import com.scaleunlimited.cascading.hadoop.HadoopUtils;
-
 @SuppressWarnings("deprecation")
 public class DemoCrawlTool {
 
-
+    private static final Logger LOGGER = Logger.getLogger(DemoCrawlTool.class);
+    
     private static void printUsageAndExit(CmdLineParser parser) {
         parser.printUsage(System.err);
         System.exit(-1);
@@ -95,10 +91,7 @@ public class DemoCrawlTool {
         
         try {
             Tap urlSink = new Hfs(new SequenceFile(CrawlDbDatum.FIELDS), crawlDbPath.toUri().toString(), true);
-            //TupleEntryCollector writer = urlSink.openForWrite(new HadoopFlowProcess(conf))
-            FlowProcess flowProcess = new HadoopFlowProcess( FlowSession.NULL, conf, true );
-            
-            TupleEntryCollector writer = urlSink.openForWrite(flowProcess);
+            TupleEntryCollector writer = urlSink.openForWrite(new HadoopFlowProcess(conf));
             SimpleUrlNormalizer normalizer = new SimpleUrlNormalizer();
 
             CrawlDbDatum datum = new CrawlDbDatum(normalizer.normalize("http://" + targetDomain), 0, 0, UrlStatus.UNFETCHED, 0);
@@ -239,7 +232,7 @@ public class DemoCrawlTool {
                 } else {
                     String protocolPatterStr = "+(?i)^(http|https)://*";
                     patterns.add(protocolPatterStr);
-                    Log.warn("Defaulting to basic url regex filtering (just suffix and protocol");
+                    LOGGER.warn("Defaulting to basic url regex filtering (just suffix and protocol");
                 }
             }
             urlFilter = new RegexUrlFilter(patterns.toArray(new String[patterns.size()]));
@@ -264,7 +257,7 @@ public class DemoCrawlTool {
                 flow.complete();
                 
                 // Writing out .dot files is a good way to verify your flows.
-                flow.writeDOT("build/valid-flow.dot");
+//              flow.writeDOT("build/valid-flow.dot");
 
                 // Update crawlDbPath to point to the latest crawl db
                 crawlDbPath = new Path(curLoopDirPath, CrawlConfig.CRAWLDB_SUBDIR_NAME);
@@ -275,7 +268,7 @@ public class DemoCrawlTool {
             e.printStackTrace(System.err);
             System.exit(-1);
         } catch (Throwable t) {
-            System.err.println("Exception running tool: " + t.getClass().getName() + ":"+ t.getMessage() + "-" + Arrays.toString(t.getStackTrace()) );
+            System.err.println("Exception running tool: " + t.getMessage());
             t.printStackTrace(System.err);
             System.exit(-1);
         }

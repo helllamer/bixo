@@ -27,9 +27,6 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
-import org.apache.tika.metadata.Metadata;
-import org.apache.tika.sax.BodyContentHandler;
-import org.apache.tika.sax.XHTMLContentHandler;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.Node;

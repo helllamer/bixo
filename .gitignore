@@ -7,6 +7,7 @@ build
 !src/build
 target
 build-eclipse
+examples/logs
 build.sh
 *.iml
 *.dot
@@ -19,3 +20,4 @@ junit*.properties
 lib/*
 logs/*
 examples/logs/*
+*.swp

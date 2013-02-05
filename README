@@ -16,26 +16,33 @@ Bixo is released under the Apache License, Version 2.0.
 Building
 ===============================
 
-See http://openbixo.org/documentation/building-bixo/ for full details.
+You need fresh "cascading.utils".
 
-You need Apache Ant 1.7 or higher. 
+$ git clone https://github.com/ScaleUnlimited/cascading.utils/ cascading-utils-git
+$ cd cascading-utils-git
 
-To get a list of valid targets:
+Maybe, modify pom.xml deps and set property "cascading.version" to something like "2.2.0-wip-15" 
+or any other available on conjars.org. And build it.
+$ mvn package -DskipTests
 
-% cd <project directory>
-% ant -p
+And add ready-to-use jar into with similar command:
+$ mnv install:install-file -DgroupId=com.scaleunlimited -DartifactId=cascading.utils -Dversion=2.1-SNAPSHOT -Dpackaging=jar -Dfile=target/cascading.utils-2.1-SNAPSHOT.jar
 
-To  clean and build a jar (which also runs all tests):
+Checkout bixo for cascading-2.1:
 
-% ant clean jar
+$ cd ..
+$ git clone https://github.com/helllamer/bixo
+$ git checkout cascading-2.1
 
-Note that "ant clean test jar" will currently fail, due to a bug in the maven ant task
-plugin used for managing dependencies.
+And build bixo and demo-crawler (see examples/) *somehow*. Something like this (untested):
+$ ant jar
+$ cd examples/
+$ ant jar
+
 
 To create Eclipse project files:
 
 % ant eclipse
 
 Then, from Eclipse follow the standard procedure to import an existing Java project into your Workspace.
-
 

@@ -22,8 +22,8 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
+import cascading.flow.hadoop.HadoopFlowConnector;
 import org.apache.commons.io.IOUtils;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
@@ -46,8 +46,6 @@ import bixo.utils.IoUtils;
 import cascading.flow.Flow;
 import cascading.flow.FlowConnector;
 import cascading.flow.FlowProcess;
-import cascading.flow.FlowSession;
-import cascading.flow.hadoop.HadoopFlowConnector;
 import cascading.flow.hadoop.HadoopFlowProcess;
 import cascading.operation.BaseOperation;
 import cascading.operation.Function;
@@ -61,8 +59,6 @@ import cascading.pipe.Every;
 import cascading.pipe.GroupBy;
 import cascading.pipe.Pipe;
 import cascading.pipe.joiner.OuterJoin;
-import cascading.pipe.CoGroup;
-
 import cascading.scheme.hadoop.SequenceFile;
 import cascading.scheme.hadoop.TextDelimited;
 import cascading.scheme.hadoop.TextLine;
@@ -141,7 +137,7 @@ public class DemoWebMiningWorkflow {
             else
               numTasks = process.getCurrentNumReducers();
 
-            int taskNum = process.getCurrentSliceNum();
+            int taskNum = process.getNumProcessSlices();
 
             context.limit = (long) Math.floor( (double) _limit / (double) numTasks );
 
@@ -174,8 +170,7 @@ public class DemoWebMiningWorkflow {
         TupleEntryCollector writer = null;
         try {
             Tap urlSink = new Hfs(new TextLine(), crawlDbPath.toString(), true);
-            FlowProcess flowProcess = new HadoopFlowProcess(FlowSession.NULL, defaultJobConf, true);
-            writer = urlSink.openForWrite( flowProcess );
+            writer = urlSink.openForWrite(new HadoopFlowProcess(defaultJobConf));
 
             is = DemoWebMiningWorkflow.class.getResourceAsStream(fileName);
             if (is == null) {
@@ -218,7 +213,7 @@ public class DemoWebMiningWorkflow {
         
         JobConf conf = HadoopUtils.getDefaultJobConf();
         boolean isLocal = HadoopUtils.isJobLocal(conf);
-        int numReducers = 1; // we always want to use a single reducer, to avoid contention
+        int numReducers = HadoopUtils.getNumReducers(conf);
         conf.setNumReduceTasks(numReducers);
         conf.setInt("mapred.min.split.size", 64 * 1024 * 1024);
         Map props = HadoopUtils.getDefaultProperties(DemoWebMiningWorkflow.class, false, conf);

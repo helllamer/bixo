@@ -18,6 +18,7 @@ package bixo.examples.crawl;
 
 import java.io.IOException;
 
+import cascading.flow.hadoop.HadoopFlowProcess;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.mapred.JobConf;
@@ -29,9 +30,6 @@ import org.kohsuke.args4j.CmdLineParser;
 import bixo.datum.StatusDatum;
 import bixo.datum.UrlStatus;
 import bixo.utils.CrawlDirUtils;
-import cascading.flow.FlowProcess;
-import cascading.flow.FlowSession;
-import cascading.flow.hadoop.HadoopFlowProcess;
 import cascading.scheme.hadoop.SequenceFile;
 import cascading.scheme.hadoop.TextLine;
 import cascading.tap.hadoop.Hfs;
@@ -52,10 +50,9 @@ public class DemoStatusTool {
         Path statusPath = new Path(curDirPath, CrawlConfig.STATUS_SUBDIR_NAME);
         Tap statusTap = new Hfs(new TextLine(), statusPath.toUri().toString());
         
-        FlowProcess flowProcess = new HadoopFlowProcess( FlowSession.NULL, conf, true );
-        TupleEntryIterator iter = statusTap.openForRead( flowProcess );
-        //TupleEntryIterator iter = statusTap.openForRead(conf);
+        TupleEntryIterator iter = statusTap.openForRead(new HadoopFlowProcess());
         
+        LOGGER.info("Analyzing: " +  CrawlConfig.STATUS_SUBDIR_NAME);
         UrlStatus[] statusValues = UrlStatus.values();
         int[] statusCounts = new int[statusValues.length];
         int totalEntries = 0;
@@ -85,12 +82,13 @@ public class DemoStatusTool {
         int totalEntries;
         Path crawlDbPath = new Path(curDirPath, CrawlConfig.CRAWLDB_SUBDIR_NAME);
         Tap crawldbTap = new Hfs(new SequenceFile(CrawlDbDatum.FIELDS), crawlDbPath.toUri().toString());
-        FlowProcess flowProcess = new HadoopFlowProcess( FlowSession.NULL, conf, true);
-        iter = crawldbTap.openForRead( flowProcess );
+        iter = crawldbTap.openForRead(new HadoopFlowProcess());
         totalEntries = 0;
         int fetchedUrls = 0;
         int unfetchedUrls = 0;
-        
+ 
+        LOGGER.info("Analyzing: " +  CrawlConfig.CRAWLDB_SUBDIR_NAME);
+
         while (iter.hasNext()) {
             TupleEntry entry = iter.next();
             totalEntries += 1;
@@ -124,7 +122,7 @@ public class DemoStatusTool {
             printUsageAndExit(parser);
         }
 
-        String crawlDirName = options.getCrawlDir();
+        String crawlDirName = options.getWorkingDir();
 
         try {
         	JobConf conf = new JobConf();
