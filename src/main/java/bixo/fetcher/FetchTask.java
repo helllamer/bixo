@@ -33,7 +33,7 @@ import bixo.exceptions.IOFetchException;
 import bixo.hadoop.FetchCounters;
 import cascading.tuple.Tuple;
 
-import com.bixolabs.cascading.LoggingFlowProcess;
+import com.scaleunlimited.cascading.LoggingFlowProcess;
 
 /**
  * Runnable instance for fetching a set of URLs from the same server, using keep-alive.
@@ -58,7 +58,6 @@ public class FetchTask implements Runnable {
     }
 
     @SuppressWarnings("rawtypes")
-    @Override
     public void run() {
         LoggingFlowProcess process = _fetchMgr.getProcess();
         process.increment(FetchCounters.DOMAINS_PROCESSING, 1);

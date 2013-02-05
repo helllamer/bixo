@@ -21,7 +21,7 @@ import cascading.tuple.Fields;
 import cascading.tuple.Tuple;
 import cascading.tuple.TupleEntry;
 
-import com.bixolabs.cascading.BaseDatum;
+import com.scaleunlimited.cascading.BaseDatum;
 
 @SuppressWarnings("serial")
 public class CrawlDbDatum extends BaseDatum {

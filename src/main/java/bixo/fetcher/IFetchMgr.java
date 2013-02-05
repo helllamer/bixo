@@ -18,7 +18,7 @@ package bixo.fetcher;
 
 import cascading.tuple.Tuple;
 
-import com.bixolabs.cascading.LoggingFlowProcess;
+import com.scaleunlimited.cascading.LoggingFlowProcess;
 
 
 public interface IFetchMgr {

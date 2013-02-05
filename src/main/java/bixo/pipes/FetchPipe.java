@@ -57,10 +57,10 @@ import cascading.tuple.Fields;
 import cascading.tuple.Tuple;
 import cascading.tuple.TupleEntry;
 
-import com.bixolabs.cascading.BaseSplitter;
-import com.bixolabs.cascading.NullContext;
-import com.bixolabs.cascading.NullSinkTap;
-import com.bixolabs.cascading.SplitterAssembly;
+import com.scaleunlimited.cascading.BaseSplitter;
+import com.scaleunlimited.cascading.NullContext;
+import com.scaleunlimited.cascading.NullSinkTap;
+import com.scaleunlimited.cascading.SplitterAssembly;
 
 @SuppressWarnings("serial")
 public class FetchPipe extends SubAssembly {
@@ -125,7 +125,6 @@ public class FetchPipe extends SubAssembly {
         }
 
         @SuppressWarnings("rawtypes")
-        @Override
         public void operate(FlowProcess process, FunctionCall<NullContext> funcCall) {
             Tuple t = funcCall.getArguments().getTuple();
             
@@ -150,7 +149,6 @@ public class FetchPipe extends SubAssembly {
         }
 
         @SuppressWarnings("rawtypes")
-        @Override
         public void operate(FlowProcess process, FunctionCall<NullContext> funcCall) {
             TupleEntry entry = funcCall.getArguments();
             FetchedDatum fd = new FetchedDatum(entry);
@@ -187,7 +185,6 @@ public class FetchPipe extends SubAssembly {
             super(StatusDatum.FIELDS);
         }
 
-        @Override
         public void operate(FlowProcess process, FunctionCall<NullContext> funcCall) {
             ScoredUrlDatum sd = new ScoredUrlDatum(funcCall.getArguments());
             

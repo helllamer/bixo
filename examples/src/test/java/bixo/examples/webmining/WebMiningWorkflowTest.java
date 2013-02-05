@@ -19,6 +19,7 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import cascading.flow.hadoop.HadoopFlowProcess;
 import org.apache.commons.io.FileUtils;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
@@ -36,13 +37,13 @@ import bixo.config.UserAgent;
 import bixo.datum.FetchedDatum;
 import bixo.utils.CrawlDirUtils;
 import cascading.flow.Flow;
-import cascading.scheme.SequenceFile;
-import cascading.scheme.TextLine;
-import cascading.tap.Hfs;
+import cascading.scheme.hadoop.SequenceFile;
+import cascading.scheme.hadoop.TextLine;
+import cascading.tap.hadoop.Hfs;
 import cascading.tuple.Fields;
 import cascading.tuple.TupleEntryIterator;
 
-import com.bixolabs.cascading.HadoopUtils;
+import com.scaleunlimited.cascading.hadoop.HadoopUtils;
 
 @SuppressWarnings("deprecation")
 public class WebMiningWorkflowTest {
@@ -185,7 +186,7 @@ public class WebMiningWorkflowTest {
         } else {
             sourceTap = new Hfs(new SequenceFile(fields), dataPath.toString(), false);
         }
-        TupleEntryIterator tupleEntryIterator = sourceTap.openForRead(HadoopUtils.getDefaultJobConf());
+        TupleEntryIterator tupleEntryIterator = sourceTap.openForRead(new HadoopFlowProcess(HadoopUtils.getDefaultJobConf()));
         int numEntries = 0;
         while (tupleEntryIterator.hasNext()) {
           tupleEntryIterator.next();

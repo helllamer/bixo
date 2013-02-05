@@ -31,7 +31,7 @@ import cascading.scheme.hadoop.SequenceFile;
 import cascading.tap.hadoop.Lfs;
 import cascading.tuple.TupleEntryCollector;
 
-import com.bixolabs.cascading.PartitioningKey;
+import com.scaleunlimited.cascading.PartitioningKey;
 
 
 @SuppressWarnings("deprecation")

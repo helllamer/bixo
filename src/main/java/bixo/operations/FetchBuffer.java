@@ -48,10 +48,10 @@ import cascading.tuple.Tuple;
 import cascading.tuple.TupleEntry;
 import cascading.tuple.TupleEntryCollector;
 
-import com.bixolabs.cascading.BaseDatum;
-import com.bixolabs.cascading.LoggingFlowProcess;
-import com.bixolabs.cascading.LoggingFlowReporter;
-import com.bixolabs.cascading.NullContext;
+import com.scaleunlimited.cascading.BaseDatum;
+import com.scaleunlimited.cascading.LoggingFlowProcess;
+import com.scaleunlimited.cascading.LoggingFlowReporter;
+import com.scaleunlimited.cascading.NullContext;
 
 @SuppressWarnings( { "serial" })
 public class FetchBuffer extends BaseOperation<NullContext> implements Buffer<NullContext>, IFetchMgr {
@@ -73,7 +73,6 @@ public class FetchBuffer extends BaseOperation<NullContext> implements Buffer<Nu
             }
         }
         
-        @Override
         public int compare(FetchSetDatum o1, FetchSetDatum o2) {
             long o1FetchTime = getFetchTime(o1.getGroupingRef());
             long o2FetchTime = getFetchTime(o2.getGroupingRef());
@@ -298,7 +297,6 @@ public class FetchBuffer extends BaseOperation<NullContext> implements Buffer<Nu
         _keepCollecting = new AtomicBoolean(true);
     }
 
-    @Override
     public void operate(FlowProcess process, BufferCall<NullContext> buffCall) {
         QueuedValues values = new QueuedValues(buffCall.getArgumentsIterator());
 
@@ -407,7 +405,6 @@ public class FetchBuffer extends BaseOperation<NullContext> implements Buffer<Nu
         _flowProcess.dumpCounters();
     }
 
-    @Override
     public void finished(String ref) {
         synchronized (_refLock) {
             Long nextFetchTime = _activeRefs.remove(ref);
@@ -425,7 +422,6 @@ public class FetchBuffer extends BaseOperation<NullContext> implements Buffer<Nu
         }
     }
 
-    @Override
     public void collect(Tuple tuple) {
         // Prevent two bad things from happening:
         // 1. Somebody changes _keepCollecting after we've tested that it's true
@@ -439,7 +435,6 @@ public class FetchBuffer extends BaseOperation<NullContext> implements Buffer<Nu
         }
     }
 
-    @Override
     public LoggingFlowProcess getProcess() {
         return _flowProcess;
     }

@@ -28,7 +28,7 @@ import cascading.operation.BufferCall;
 import cascading.operation.OperationCall;
 import cascading.tuple.TupleEntry;
 
-import com.bixolabs.cascading.NullContext;
+import com.scaleunlimited.cascading.NullContext;
 
 @SuppressWarnings("serial")
 public class LatestUrlDatumBuffer extends BaseOperation<NullContext> implements Buffer<NullContext> {

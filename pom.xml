@@ -52,6 +52,10 @@
 			<url>http://conjars.org/repo</url>
 		</repository>
 	</repositories>
+
+	<properties>
+		<cascading.version>2.2.0-wip-15</cascading.version>
+	</properties>
 	
 	<dependencies>
 
@@ -59,14 +63,21 @@
 		
 		<dependency>
             <groupId>cascading</groupId>
-            <artifactId>cascading-core</artifactId>
+	    <artifactId>cascading-core</artifactId>
+	    <version>${cascading.version}</version>
         </dependency>
         
         <dependency>
-            <groupId>com.bixolabs</groupId>
+            <groupId>com.scaleunlimited</groupId>
             <artifactId>cascading.utils</artifactId>
-            <version>1.1</version>
-        </dependency>
+            <version>2.1-SNAPSHOT</version>
+	</dependency>
+
+	<dependency>
+	    <groupId>cascading</groupId>
+	    <artifactId>cascading-hadoop</artifactId>
+	    <version>${cascading.version}</version>
+	</dependency>
         
 		<dependency>
             <groupId>org.apache.httpcomponents</groupId>

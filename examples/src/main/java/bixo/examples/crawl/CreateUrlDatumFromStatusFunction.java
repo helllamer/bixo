@@ -27,7 +27,7 @@ import cascading.operation.Function;
 import cascading.operation.FunctionCall;
 import cascading.operation.OperationCall;
 
-import com.bixolabs.cascading.NullContext;
+import com.scaleunlimited.cascading.NullContext;
 
 @SuppressWarnings("serial")
 public class CreateUrlDatumFromStatusFunction extends BaseOperation<NullContext> implements Function<NullContext> {

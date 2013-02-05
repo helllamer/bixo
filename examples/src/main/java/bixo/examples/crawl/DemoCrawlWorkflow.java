@@ -71,11 +71,11 @@ import cascading.tap.Tap;
 import cascading.tuple.Fields;
 import cascading.tuple.TupleEntry;
 
-import com.bixolabs.cascading.BaseSplitter;
-import com.bixolabs.cascading.HadoopUtils;
-import com.bixolabs.cascading.NullContext;
-import com.bixolabs.cascading.SplitterAssembly;
-import com.bixolabs.cascading.TupleLogger;
+import com.scaleunlimited.cascading.BaseSplitter;
+import com.scaleunlimited.cascading.hadoop.HadoopUtils;
+import com.scaleunlimited.cascading.NullContext;
+import com.scaleunlimited.cascading.SplitterAssembly;
+import com.scaleunlimited.cascading.TupleLogger;
 
 
 @SuppressWarnings("deprecation")
@@ -144,7 +144,7 @@ public class DemoCrawlWorkflow {
 
     
     public static Flow createFlow(Path curWorkingDirPath, Path crawlDbPath, FetcherPolicy fetcherPolicy, UserAgent userAgent, BaseUrlFilter urlFilter, DemoCrawlToolOptions options) throws Throwable {
-        JobConf conf = HadoopUtils.getDefaultJobConf(CrawlConfig.CRAWL_STACKSIZE_KB);
+        JobConf conf = HadoopUtils.getDefaultJobConf();
         int numReducers = HadoopUtils.getNumReducers(conf);
         conf.setNumReduceTasks(numReducers);
         //Properties props = HadoopUtils.getDefaultProperties(DemoCrawlWorkflow.class, options.isDebugLogging(), conf);

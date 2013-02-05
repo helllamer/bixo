@@ -23,7 +23,7 @@ import java.util.Random;
 import org.apache.http.HttpStatus;
 import org.apache.log4j.Logger;
 
-import com.bixolabs.cascading.Payload;
+import com.scaleunlimited.cascading.Payload;
 
 import bixo.config.FetcherPolicy;
 import bixo.datum.ContentBytes;

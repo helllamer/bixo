@@ -20,6 +20,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.regex.Pattern;
 
+import cascading.flow.hadoop.HadoopFlowProcess;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.mapred.JobConf;
@@ -29,7 +30,7 @@ import org.apache.log4j.PatternLayout;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 
-import com.bixolabs.cascading.HadoopUtils;
+import com.scaleunlimited.cascading.hadoop.HadoopUtils;
 
 import bixo.config.FetcherPolicy;
 import bixo.config.UserAgent;
@@ -40,9 +41,9 @@ import bixo.urls.BaseUrlFilter;
 import bixo.urls.SimpleUrlNormalizer;
 import bixo.utils.CrawlDirUtils;
 import cascading.flow.Flow;
-import cascading.flow.PlannerException;
-import cascading.scheme.SequenceFile;
-import cascading.tap.Hfs;
+import cascading.flow.planner.PlannerException;
+import cascading.scheme.hadoop.SequenceFile;
+import cascading.tap.hadoop.Hfs;
 import cascading.tap.Tap;
 import cascading.tuple.TupleEntryCollector;
 
@@ -133,7 +134,7 @@ public class SimpleCrawlTool {
         
         try {
             Tap urlSink = new Hfs(new SequenceFile(CrawlDbDatum.FIELDS), crawlDbPath.toUri().toString(), true);
-            TupleEntryCollector writer = urlSink.openForWrite(conf);
+            TupleEntryCollector writer = urlSink.openForWrite(new HadoopFlowProcess(conf));
             SimpleUrlNormalizer normalizer = new SimpleUrlNormalizer();
 
             CrawlDbDatum datum = new CrawlDbDatum(normalizer.normalize("http://" + targetDomain), 0, 0, UrlStatus.UNFETCHED, 0);

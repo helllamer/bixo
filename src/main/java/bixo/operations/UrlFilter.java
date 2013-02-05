@@ -27,7 +27,7 @@ import cascading.operation.Filter;
 import cascading.operation.FilterCall;
 import cascading.operation.OperationCall;
 
-import com.bixolabs.cascading.NullContext;
+import com.scaleunlimited.cascading.NullContext;
 
 @SuppressWarnings("serial")
 public class UrlFilter extends BaseOperation<NullContext> implements Filter<NullContext> {
@@ -50,7 +50,6 @@ public class UrlFilter extends BaseOperation<NullContext> implements Filter<Null
 		_numAccepted = 0;
 	}
 	
-	@Override
 	public boolean isRemove(FlowProcess process, FilterCall<NullContext> filterCall) {
 		UrlDatum datum = new UrlDatum(filterCall.getArguments());
 		if (_filter.isRemove(datum)) {

@@ -28,7 +28,7 @@ import cascading.jdbc.JDBCTap;
 import cascading.jdbc.TableDesc;
 import cascading.tap.Tap;
 
-import com.bixolabs.cascading.HadoopUtils;
+import com.scaleunlimited.cascading.hadoop.HadoopUtils;
 
 @SuppressWarnings("deprecation")
 public class JDBCTapFactory {

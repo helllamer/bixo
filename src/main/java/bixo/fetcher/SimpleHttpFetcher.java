@@ -100,7 +100,7 @@ import bixo.utils.EncodingUtils;
 import bixo.utils.EncodingUtils.ExpandedResult;
 import bixo.utils.HttpUtils;
 
-import com.bixolabs.cascading.Payload;
+import com.scaleunlimited.cascading.Payload;
 
 @SuppressWarnings("serial")
 public class SimpleHttpFetcher extends BaseFetcher {
@@ -164,7 +164,6 @@ public class SimpleHttpFetcher extends BaseFetcher {
             _maxRetryCount = maxRetryCount;
         }
         
-        @Override
         public boolean retryRequest(IOException exception, int executionCount, HttpContext context) {
             if (LOGGER.isTraceEnabled()) {
                 LOGGER.trace("Decide about retry #" + executionCount + " for exception " + exception.getMessage());
@@ -272,7 +271,6 @@ public class SimpleHttpFetcher extends BaseFetcher {
      */
     private static class MyRequestInterceptor implements HttpRequestInterceptor {
 
-        @Override
         public void process(HttpRequest request,
                             HttpContext context)
             throws HttpException, IOException {
@@ -287,7 +285,6 @@ public class SimpleHttpFetcher extends BaseFetcher {
     
     private static class DummyX509HostnameVerifier extends AbstractVerifier {
 
-        @Override
         public void verify(String host, String[] cns, String[] subjectAlts) throws SSLException {
             try {
                 verify(host, cns, subjectAlts, false);

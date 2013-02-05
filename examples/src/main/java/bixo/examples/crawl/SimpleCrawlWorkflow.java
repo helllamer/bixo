@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
+import cascading.flow.hadoop.HadoopFlowConnector;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.mapred.JobConf;
@@ -54,18 +55,18 @@ import cascading.pipe.Each;
 import cascading.pipe.Every;
 import cascading.pipe.GroupBy;
 import cascading.pipe.Pipe;
-import cascading.scheme.SequenceFile;
-import cascading.scheme.TextLine;
-import cascading.tap.Hfs;
+import cascading.scheme.hadoop.SequenceFile;
+import cascading.scheme.hadoop.TextLine;
+import cascading.tap.hadoop.Hfs;
 import cascading.tap.Tap;
 import cascading.tuple.Fields;
 import cascading.tuple.TupleEntry;
 
-import com.bixolabs.cascading.BaseSplitter;
-import com.bixolabs.cascading.HadoopUtils;
-import com.bixolabs.cascading.NullContext;
-import com.bixolabs.cascading.SplitterAssembly;
-import com.bixolabs.cascading.TupleLogger;
+import com.scaleunlimited.cascading.BaseSplitter;
+import com.scaleunlimited.cascading.hadoop.HadoopUtils;
+import com.scaleunlimited.cascading.NullContext;
+import com.scaleunlimited.cascading.SplitterAssembly;
+import com.scaleunlimited.cascading.TupleLogger;
 
 
 @SuppressWarnings("deprecation")
@@ -134,10 +135,10 @@ public class SimpleCrawlWorkflow {
 
     
     public static Flow createFlow(Path curWorkingDirPath, Path crawlDbPath, FetcherPolicy fetcherPolicy, UserAgent userAgent, BaseUrlFilter urlFilter, SimpleCrawlToolOptions options) throws Throwable {
-        JobConf conf = HadoopUtils.getDefaultJobConf(CrawlConfig.CRAWL_STACKSIZE_KB);
+        JobConf conf = HadoopUtils.getDefaultJobConf();
         int numReducers = HadoopUtils.getNumReducers(conf);
         conf.setNumReduceTasks(numReducers);
-        Properties props = HadoopUtils.getDefaultProperties(SimpleCrawlWorkflow.class, options.isDebugLogging(), conf);
+        Map props = HadoopUtils.getDefaultProperties(SimpleCrawlWorkflow.class, options.isDebugLogging(), conf);
         FileSystem fs = curWorkingDirPath.getFileSystem(conf);
 
         // Input : the crawldb
@@ -244,7 +245,7 @@ public class SimpleCrawlWorkflow {
         sinkMap.put(ParsePipe.PARSE_PIPE_NAME, parseSink);
         sinkMap.put(crawlDbPipe.getName(), loopCrawldbSink);
 
-        FlowConnector flowConnector = new FlowConnector(props);
+        FlowConnector flowConnector = new HadoopFlowConnector(props);
         Flow flow = flowConnector.connect(inputSource, sinkMap, statusPipe, contentPipe, parsePipe.getTailPipe(), outputPipe);
 
         return flow;

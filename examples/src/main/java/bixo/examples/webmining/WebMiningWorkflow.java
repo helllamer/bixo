@@ -22,8 +22,8 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
+import cascading.flow.hadoop.HadoopFlowConnector;
 import org.apache.commons.io.IOUtils;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
@@ -58,20 +58,20 @@ import cascading.pipe.Each;
 import cascading.pipe.Every;
 import cascading.pipe.GroupBy;
 import cascading.pipe.Pipe;
-import cascading.pipe.cogroup.OuterJoin;
-import cascading.scheme.SequenceFile;
-import cascading.scheme.TextDelimited;
-import cascading.scheme.TextLine;
-import cascading.tap.Hfs;
+import cascading.pipe.joiner.OuterJoin;
+import cascading.scheme.hadoop.SequenceFile;
+import cascading.scheme.hadoop.TextDelimited;
+import cascading.scheme.hadoop.TextLine;
+import cascading.tap.hadoop.Hfs;
 import cascading.tap.Tap;
 import cascading.tuple.Fields;
 import cascading.tuple.TupleEntry;
 import cascading.tuple.TupleEntryCollector;
 
-import com.bixolabs.cascading.BaseSplitter;
-import com.bixolabs.cascading.HadoopUtils;
-import com.bixolabs.cascading.SplitterAssembly;
-import com.bixolabs.cascading.TupleLogger;
+import com.scaleunlimited.cascading.BaseSplitter;
+import com.scaleunlimited.cascading.hadoop.HadoopUtils;
+import com.scaleunlimited.cascading.SplitterAssembly;
+import com.scaleunlimited.cascading.TupleLogger;
 
 @SuppressWarnings("deprecation")
 public class WebMiningWorkflow {
@@ -137,7 +137,7 @@ public class WebMiningWorkflow {
             else
               numTasks = process.getCurrentNumReducers();
 
-            int taskNum = process.getCurrentTaskNum();
+            int taskNum = process.getNumProcessSlices();
 
             context.limit = (long) Math.floor( (double) _limit / (double) numTasks );
 
@@ -170,7 +170,7 @@ public class WebMiningWorkflow {
         TupleEntryCollector writer = null;
         try {
             Tap urlSink = new Hfs(new TextLine(), crawlDbPath.toString(), true);
-            writer = urlSink.openForWrite(defaultJobConf);
+            writer = urlSink.openForWrite(new HadoopFlowProcess(defaultJobConf));
 
             is = WebMiningWorkflow.class.getResourceAsStream(fileName);
             if (is == null) {
@@ -211,12 +211,12 @@ public class WebMiningWorkflow {
         // be specified via options.getAnalyzer. From this we'll get outlinks, page score, and
         // any results.
         
-        JobConf conf = HadoopUtils.getDefaultJobConf(CrawlConfig.CRAWL_STACKSIZE_KB);
+        JobConf conf = HadoopUtils.getDefaultJobConf();
         boolean isLocal = HadoopUtils.isJobLocal(conf);
         int numReducers = 1; // we always want to use a single reducer, to avoid contention
         conf.setNumReduceTasks(numReducers);
         conf.setInt("mapred.min.split.size", 64 * 1024 * 1024);
-        Properties props = HadoopUtils.getDefaultProperties(WebMiningWorkflow.class, false, conf);
+        Map props = HadoopUtils.getDefaultProperties(WebMiningWorkflow.class, false, conf);
         FileSystem fs = crawlDbPath.getFileSystem(conf);
 
         // Input : the crawldb
@@ -296,7 +296,7 @@ public class WebMiningWorkflow {
         sinkMap.put(contentPipe.getName(), contentSink);
         sinkMap.put(resultsPipe.getName(), resultsSink);
 
-        FlowConnector flowConnector = new FlowConnector(props);
+        FlowConnector flowConnector = new HadoopFlowConnector(props);
         Flow flow = flowConnector.connect(inputSource, sinkMap, updatePipe, statusPipe, contentPipe, resultsPipe);
 
         return flow;

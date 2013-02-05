@@ -60,8 +60,8 @@ import cascading.tap.Tap;
 import cascading.tuple.Fields;
 import cascading.tuple.TupleEntry;
 
-import com.bixolabs.cascading.HadoopUtils;
-import com.bixolabs.cascading.NullContext;
+import com.scaleunlimited.cascading.hadoop.HadoopUtils;
+import com.scaleunlimited.cascading.NullContext;
 
 @SuppressWarnings("deprecation")
 public class JDBCCrawlWorkflow {
@@ -117,7 +117,7 @@ public class JDBCCrawlWorkflow {
     
     public static Flow createFlow(Path inputDir, Path curLoopDirPath, UserAgent userAgent, FetcherPolicy fetcherPolicy,
                     BaseUrlFilter urlFilter, int maxThreads, boolean debug, String persistentDbLocation) throws Throwable {
-        JobConf conf = HadoopUtils.getDefaultJobConf(CrawlConfig.CRAWL_STACKSIZE_KB);
+        JobConf conf = HadoopUtils.getDefaultJobConf();
         int numReducers = HadoopUtils.getNumReducers(conf);
         conf.setNumReduceTasks(numReducers);
 

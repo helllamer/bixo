@@ -16,7 +16,7 @@
  */
 package bixo.datum;
 
-import com.bixolabs.cascading.PayloadDatum;
+import com.scaleunlimited.cascading.PayloadDatum;
 
 import cascading.tuple.Fields;
 import cascading.tuple.Tuple;

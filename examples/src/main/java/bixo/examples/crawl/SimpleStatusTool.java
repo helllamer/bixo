@@ -18,6 +18,7 @@ package bixo.examples.crawl;
 
 import java.io.IOException;
 
+import cascading.flow.hadoop.HadoopFlowProcess;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.mapred.JobConf;
@@ -28,9 +29,9 @@ import org.kohsuke.args4j.CmdLineParser;
 
 import bixo.datum.UrlStatus;
 import bixo.utils.CrawlDirUtils;
-import cascading.scheme.SequenceFile;
-import cascading.scheme.TextLine;
-import cascading.tap.Hfs;
+import cascading.scheme.hadoop.SequenceFile;
+import cascading.scheme.hadoop.TextLine;
+import cascading.tap.hadoop.Hfs;
 import cascading.tap.Tap;
 import cascading.tuple.TupleEntry;
 import cascading.tuple.TupleEntryIterator;
@@ -48,7 +49,7 @@ public class SimpleStatusTool {
         Path statusPath = new Path(curDirPath, CrawlConfig.STATUS_SUBDIR_NAME);
         Tap statusTap = new Hfs(new TextLine(), statusPath.toUri().toString());
         
-        TupleEntryIterator iter = statusTap.openForRead(conf);
+        TupleEntryIterator iter = statusTap.openForRead(new HadoopFlowProcess());
         
         UrlStatus[] statusValues = UrlStatus.values();
         int[] statusCounts = new int[statusValues.length];
@@ -79,7 +80,7 @@ public class SimpleStatusTool {
         int totalEntries;
         Path crawlDbPath = new Path(curDirPath, CrawlConfig.CRAWLDB_SUBDIR_NAME);
         Tap crawldbTap = new Hfs(new SequenceFile(CrawlDbDatum.FIELDS), crawlDbPath.toUri().toString());
-        iter = crawldbTap.openForRead(conf);
+        iter = crawldbTap.openForRead(new HadoopFlowProcess());
         totalEntries = 0;
         int fetchedUrls = 0;
         int unfetchedUrls = 0;

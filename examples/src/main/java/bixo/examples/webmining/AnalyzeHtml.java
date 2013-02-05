@@ -43,7 +43,7 @@ import cascading.flow.FlowProcess;
 import cascading.operation.OperationCall;
 import cascading.tuple.TupleEntryCollector;
 
-import com.bixolabs.cascading.NullContext;
+import com.scaleunlimited.cascading.NullContext;
 
 @SuppressWarnings("serial")
 public class AnalyzeHtml extends DOMParser {

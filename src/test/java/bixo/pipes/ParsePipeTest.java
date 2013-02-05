@@ -21,7 +21,8 @@ import java.net.URL;
 import java.util.Iterator;
 import java.util.Set;
 
-import org.apache.hadoop.mapred.JobConf;
+import cascading.flow.hadoop.HadoopFlowConnector;
+import cascading.flow.hadoop.HadoopFlowProcess;
 import org.archive.io.ArchiveReader;
 import org.archive.io.ArchiveReaderFactory;
 import org.archive.io.ArchiveRecord;
@@ -37,8 +38,8 @@ import cascading.CascadingTestCase;
 import cascading.flow.Flow;
 import cascading.flow.FlowConnector;
 import cascading.pipe.Pipe;
-import cascading.scheme.SequenceFile;
-import cascading.tap.Lfs;
+import cascading.scheme.hadoop.SequenceFile;
+import cascading.tap.hadoop.Lfs;
 import cascading.tuple.TupleEntryCollector;
 
 @SuppressWarnings("deprecation")
@@ -53,7 +54,7 @@ public class ParsePipeTest extends CascadingTestCase {
         Lfs in = new Lfs(new SequenceFile(FetchedDatum.FIELDS), "build/test/ParserPipeTest/in", true);
         Lfs out = new Lfs(new SequenceFile(ParsedDatum.FIELDS), "build/test/ParserPipeTest/out", true);
 
-        TupleEntryCollector write = in.openForWrite(new JobConf());
+        TupleEntryCollector write = in.openForWrite(new HadoopFlowProcess());
 
         ArchiveReader archiveReader = ArchiveReaderFactory.get("src/test/resources/someHtml.arc");
         Iterator<ArchiveRecord> iterator = archiveReader.iterator();
@@ -99,7 +100,7 @@ public class ParsePipeTest extends CascadingTestCase {
         }
 
         write.close();
-        FlowConnector flowConnector = new FlowConnector();
+        FlowConnector flowConnector = new HadoopFlowConnector();
         Flow flow = flowConnector.connect(in, out, parserPipe);
         flow.complete();
         

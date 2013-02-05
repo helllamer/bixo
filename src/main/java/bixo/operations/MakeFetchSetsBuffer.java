@@ -32,8 +32,8 @@ import cascading.operation.BufferCall;
 import cascading.tuple.TupleEntry;
 import cascading.tuple.TupleEntryCollector;
 
-import com.bixolabs.cascading.NullContext;
-import com.bixolabs.cascading.PartitioningKey;
+import com.scaleunlimited.cascading.NullContext;
+import com.scaleunlimited.cascading.PartitioningKey;
 
 /**
  * We get ScoredUrlDatums, grouped by server IP address.
@@ -59,7 +59,6 @@ public class MakeFetchSetsBuffer extends BaseOperation<NullContext> implements B
         _numReduceTasks = numReduceTasks;
     }
 
-    @Override
     public void operate(FlowProcess process, BufferCall<NullContext> buffCall) {
         Iterator<TupleEntry> values = buffCall.getArgumentsIterator();
         TupleEntry group = buffCall.getGroup();

@@ -28,7 +28,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.bixolabs.cascading.HadoopUtils;
+import com.scaleunlimited.cascading.hadoop.HadoopUtils;
 
 
 @SuppressWarnings("deprecation")

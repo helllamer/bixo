@@ -24,7 +24,7 @@ import cascading.tuple.Fields;
 import cascading.tuple.Tuple;
 import cascading.tuple.TupleEntry;
 
-import com.bixolabs.cascading.BaseDatum;
+import com.scaleunlimited.cascading.BaseDatum;
 
 /**
  * A FetchSetDatum represents a group of URLs that will be fetched using one
@@ -87,7 +87,7 @@ public class FetchSetDatum extends BaseDatum {
             result.add(datum.getTuple());
         }
         
-        _tupleEntry.set(URLS_FN, result);
+        _tupleEntry.setRaw(URLS_FN, result);
     }
     
     public long getFetchTime() {
@@ -95,7 +95,7 @@ public class FetchSetDatum extends BaseDatum {
     }
     
     public void setFetchTime(long fetchTime) {
-        _tupleEntry.set(FETCH_TIME_FN, fetchTime);
+        _tupleEntry.setRaw(FETCH_TIME_FN, fetchTime);
     }
     
     public long getFetchDelay() {

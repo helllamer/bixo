@@ -37,7 +37,7 @@ import bixo.utils.DomainNames;
 import bixo.utils.GroupingKey;
 import cascading.tuple.TupleEntryCollector;
 
-import com.bixolabs.cascading.LoggingFlowProcess;
+import com.scaleunlimited.cascading.LoggingFlowProcess;
 
 public class ProcessRobotsTask implements Runnable {
     private static final Logger LOGGER = Logger.getLogger(ProcessRobotsTask.class);
@@ -89,7 +89,6 @@ public class ProcessRobotsTask implements Runnable {
      * for all of the URLs that provides the count & crawl delay (or deferred/blocked)
      * values that we need.
      */
-    @Override
     public void run() {
         _flowProcess.increment(FetchCounters.DOMAINS_PROCESSING, 1);
 

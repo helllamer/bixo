@@ -21,8 +21,8 @@ import cascading.tuple.Fields;
 import cascading.tuple.Tuple;
 import cascading.tuple.TupleEntry;
 
-import com.bixolabs.cascading.Payload;
-import com.bixolabs.cascading.PayloadDatum;
+import com.scaleunlimited.cascading.Payload;
+import com.scaleunlimited.cascading.PayloadDatum;
 
 @SuppressWarnings("serial")
 public class StatusDatum extends PayloadDatum {

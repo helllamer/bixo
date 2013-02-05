@@ -39,7 +39,7 @@ import cascading.operation.OperationCall;
 import cascading.tuple.Fields;
 import cascading.tuple.TupleEntryCollector;
 
-import com.bixolabs.cascading.NullContext;
+import com.scaleunlimited.cascading.NullContext;
 
 @SuppressWarnings("serial")
 public abstract class DOMParser extends BaseOperation<NullContext> implements Function<NullContext> {
@@ -124,7 +124,6 @@ public abstract class DOMParser extends BaseOperation<NullContext> implements Fu
         return false;
     }
     
-    @Override
     public void operate(FlowProcess process, FunctionCall<NullContext> funcCall) {
         _input.setTupleEntry(funcCall.getArguments());
         InputStream is = new StringInputStream(_input.getParsedText());

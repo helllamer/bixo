@@ -25,8 +25,8 @@ import cascading.tap.hadoop.Hfs;
 import cascading.tap.Tap;
 import cascading.tuple.Fields;
 
-import com.bixolabs.cascading.HadoopUtils;
-import com.bixolabs.cascading.NullContext;
+import com.scaleunlimited.cascading.hadoop.HadoopUtils;
+import com.scaleunlimited.cascading.NullContext;
 
 @SuppressWarnings("deprecation")
 public class UrlImporter {

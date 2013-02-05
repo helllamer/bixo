@@ -28,7 +28,7 @@ import cascading.operation.BaseOperation;
 import cascading.operation.Function;
 import cascading.operation.FunctionCall;
 
-import com.bixolabs.cascading.NullContext;
+import com.scaleunlimited.cascading.NullContext;
 
 // TODO KKr - combine/resolve delta with UrlImporter
 @SuppressWarnings("serial")
@@ -49,7 +49,6 @@ public class LoadUrlsFunction extends BaseOperation<NullContext> implements Func
         this(Integer.MAX_VALUE);
     }
 
-    @Override
     public void operate(FlowProcess process, FunctionCall<NullContext> funcCall) {
         if (_numUrls >= _maxUrls) {
             process.increment(ImportCounters.URLS_FILTERED, 1);

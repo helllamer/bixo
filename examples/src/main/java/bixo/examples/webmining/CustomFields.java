@@ -16,7 +16,7 @@
  */
 package bixo.examples.webmining;
 
-import com.bixolabs.cascading.BaseDatum;
+import com.scaleunlimited.cascading.BaseDatum;
 
 
 public class CustomFields {

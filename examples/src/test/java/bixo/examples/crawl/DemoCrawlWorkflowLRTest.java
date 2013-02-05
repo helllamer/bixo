@@ -37,7 +37,7 @@ import org.mortbay.jetty.HttpException;
 import org.mortbay.jetty.Server;
 import org.mortbay.jetty.handler.AbstractHandler;
 
-import com.bixolabs.cascading.HadoopUtils;
+import com.scaleunlimited.cascading.hadoop.HadoopUtils;
 
 import bixo.config.FetcherPolicy;
 import bixo.config.UserAgent;
@@ -47,8 +47,8 @@ import bixo.datum.UrlStatus;
 import bixo.urls.BaseUrlFilter;
 import bixo.utils.CrawlDirUtils;
 import cascading.flow.Flow;
-import cascading.scheme.SequenceFile;
-import cascading.tap.Hfs;
+import cascading.scheme.hadoop.SequenceFile;
+import cascading.tap.hadoop.Hfs;
 import cascading.tuple.TupleEntryIterator;
 
 @SuppressWarnings({ "serial", "deprecation" })
@@ -130,7 +130,7 @@ public class DemoCrawlWorkflowLRTest implements Serializable {
             // one being previously crawled, and the other 10 being pending.
 
             Hfs crawldbTap = new Hfs(new SequenceFile(CrawlDbDatum.FIELDS), crawlDbPath.toString());
-            TupleEntryIterator iter = crawldbTap.openForRead(conf);
+            TupleEntryIterator iter = crawldbTap.openForRead(flow.getFlowProcess());
 
             int numFetched = 0;
             int numPending = 0;
@@ -162,7 +162,7 @@ public class DemoCrawlWorkflowLRTest implements Serializable {
             crawlDbPath = new Path(curLoopDirPath, CrawlConfig.CRAWLDB_SUBDIR_NAME);
 
             crawldbTap = new Hfs(new SequenceFile(CrawlDbDatum.FIELDS), crawlDbPath.toString());
-            iter = crawldbTap.openForRead(conf);
+            iter = crawldbTap.openForRead(flow.getFlowProcess());
 
             numFetched = 0;
             numPending = 0;

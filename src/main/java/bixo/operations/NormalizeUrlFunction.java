@@ -23,7 +23,7 @@ import cascading.operation.BaseOperation;
 import cascading.operation.Function;
 import cascading.operation.FunctionCall;
 
-import com.bixolabs.cascading.NullContext;
+import com.scaleunlimited.cascading.NullContext;
 
 @SuppressWarnings("serial")
 public class NormalizeUrlFunction extends BaseOperation<NullContext> implements Function<NullContext> {
@@ -36,7 +36,6 @@ public class NormalizeUrlFunction extends BaseOperation<NullContext> implements 
         _normalizer = normalizer;
     }
 
-    @Override
     public void operate(FlowProcess process, FunctionCall<NullContext> funCall) {
         UrlDatum datum = new UrlDatum(funCall.getArguments());
         

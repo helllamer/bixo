@@ -41,13 +41,12 @@ import cascading.flow.FlowProcess;
 import cascading.flow.FlowSession;
 import cascading.flow.hadoop.HadoopFlowProcess;
 import cascading.flow.planner.PlannerException;
-//import cascading.flow.PlannerException;
 import cascading.scheme.hadoop.SequenceFile;
 import cascading.tap.hadoop.Hfs;
 import cascading.tap.Tap;
 import cascading.tuple.TupleEntryCollector;
 
-import com.bixolabs.cascading.HadoopUtils;
+import com.scaleunlimited.cascading.hadoop.HadoopUtils;
 
 @SuppressWarnings("deprecation")
 public class DemoCrawlTool {
@@ -96,7 +95,7 @@ public class DemoCrawlTool {
         
         try {
             Tap urlSink = new Hfs(new SequenceFile(CrawlDbDatum.FIELDS), crawlDbPath.toUri().toString(), true);
-            //TupleEntryCollector writer = urlSink.openForWrite(conf)
+            //TupleEntryCollector writer = urlSink.openForWrite(new HadoopFlowProcess(conf))
             FlowProcess flowProcess = new HadoopFlowProcess( FlowSession.NULL, conf, true );
             
             TupleEntryCollector writer = urlSink.openForWrite(flowProcess);
@@ -265,7 +264,7 @@ public class DemoCrawlTool {
                 flow.complete();
                 
                 // Writing out .dot files is a good way to verify your flows.
-//              flow.writeDOT("build/valid-flow.dot");
+                flow.writeDOT("build/valid-flow.dot");
 
                 // Update crawlDbPath to point to the latest crawl db
                 crawlDbPath = new Path(curLoopDirPath, CrawlConfig.CRAWLDB_SUBDIR_NAME);

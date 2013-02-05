@@ -30,9 +30,9 @@ import cascading.tuple.Fields;
 import cascading.tuple.Tuple;
 import cascading.tuple.TupleEntry;
 
-import com.bixolabs.cascading.LoggingFlowProcess;
-import com.bixolabs.cascading.LoggingFlowReporter;
-import com.bixolabs.cascading.NullContext;
+import com.scaleunlimited.cascading.LoggingFlowProcess;
+import com.scaleunlimited.cascading.LoggingFlowReporter;
+import com.scaleunlimited.cascading.NullContext;
 
 @SuppressWarnings("serial")
 public class UpdateCrawlDbBuffer extends BaseOperation<NullContext> implements Buffer<NullContext> {

@@ -17,6 +17,7 @@
 package bixo.hadoop;
 
 import java.io.IOException;
+import java.util.Map;
 import java.util.Properties;
 
 import junit.framework.Assert;
@@ -24,7 +25,7 @@ import junit.framework.Assert;
 import org.apache.hadoop.mapred.JobConf;
 import org.junit.Test;
 
-import com.bixolabs.cascading.HadoopUtils;
+import com.scaleunlimited.cascading.hadoop.HadoopUtils;
 
 
 
@@ -33,14 +34,14 @@ public class HadoopUtilsTest {
 
 	@Test
 	public void testStackSizeSetup() throws IOException, InterruptedException {
-		JobConf conf = HadoopUtils.getDefaultJobConf(512);
+		JobConf conf = HadoopUtils.getDefaultJobConf();
 		Assert.assertTrue(conf.get("mapred.child.java.opts").contains("-Xss512k"));
 	}
 	
 	@Test
 	public void testDebugLevel() throws IOException, InterruptedException {
-		JobConf conf = HadoopUtils.getDefaultJobConf(512);
-		Properties props = HadoopUtils.getDefaultProperties(HadoopUtilsTest.class, true, conf);
-		Assert.assertTrue(props.getProperty("log4j.logger").contains("bixo=TRACE"));
+		JobConf conf = HadoopUtils.getDefaultJobConf();
+		Map props = HadoopUtils.getDefaultProperties(HadoopUtilsTest.class, true, conf);
+		Assert.assertTrue(((String)props.get("log4j.logger")).contains("bixo=TRACE"));
 	}
 }

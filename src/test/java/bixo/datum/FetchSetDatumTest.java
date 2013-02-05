@@ -29,8 +29,8 @@ import org.junit.Test;
 
 import cascading.tuple.Tuple;
 
-import com.bixolabs.cascading.PartitioningKey;
-import com.bixolabs.cascading.Payload;
+import com.scaleunlimited.cascading.PartitioningKey;
+import com.scaleunlimited.cascading.Payload;
 
 
 public class FetchSetDatumTest {

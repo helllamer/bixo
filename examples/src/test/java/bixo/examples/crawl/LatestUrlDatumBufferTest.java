@@ -26,6 +26,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import cascading.flow.hadoop.HadoopFlowConnector;
+import cascading.flow.hadoop.HadoopFlowProcess;
 import org.apache.commons.io.FileUtils;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.mapred.JobConf;
@@ -38,15 +40,15 @@ import cascading.flow.FlowConnector;
 import cascading.pipe.Every;
 import cascading.pipe.GroupBy;
 import cascading.pipe.Pipe;
-import cascading.scheme.SequenceFile;
-import cascading.tap.Hfs;
+import cascading.scheme.hadoop.SequenceFile;
+import cascading.tap.hadoop.Hfs;
 import cascading.tap.Tap;
 import cascading.tuple.Fields;
 import cascading.tuple.TupleEntry;
 import cascading.tuple.TupleEntryCollector;
 import cascading.tuple.TupleEntryIterator;
 
-import com.bixolabs.cascading.HadoopUtils;
+import com.scaleunlimited.cascading.hadoop.HadoopUtils;
 
 @SuppressWarnings("deprecation")
 public class LatestUrlDatumBufferTest {
@@ -177,16 +179,16 @@ public class LatestUrlDatumBufferTest {
                         new Fields(UrlDatum.URL_FN));
         resultsPipe = new Every(resultsPipe, new LatestUrlDatumBuffer(), Fields.RESULTS);
 
-        Properties props = HadoopUtils.getDefaultProperties(LatestUrlDatumBufferTest.class, false, _conf);
+        Map props = HadoopUtils.getDefaultProperties(LatestUrlDatumBufferTest.class, false, _conf);
 
-        FlowConnector flowConnector = new FlowConnector(props);
+        FlowConnector flowConnector = new HadoopFlowConnector(props);
         Flow flow = flowConnector.connect(sources, resultSink, resultsPipe);
         flow.complete();
         
         // verify that the resulting pipe has the latest tuple
         
         Tap testSink = new Hfs(new SequenceFile(UrlDatum.FIELDS), resultsPath.toString(), false);
-        TupleEntryIterator reader = testSink.openForRead(_conf);
+        TupleEntryIterator reader = testSink.openForRead(flow.getFlowProcess());
         int count = 0;
         long latest = 0;
         while (reader.hasNext()) {
@@ -205,7 +207,7 @@ public class LatestUrlDatumBufferTest {
     
     private void createDataFile(String fileName, List<UrlDatum> datums) throws IOException {
         Tap urlSink = new Hfs(new SequenceFile(UrlDatum.FIELDS), fileName, true);
-        TupleEntryCollector writer = urlSink.openForWrite(_conf);
+        TupleEntryCollector writer = urlSink.openForWrite(new HadoopFlowProcess(_conf));
         for (UrlDatum datum : datums) {
             writer.add(datum.getTuple());
         }

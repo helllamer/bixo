@@ -60,7 +60,7 @@ import cascading.pipe.Each;
 import cascading.pipe.Every;
 import cascading.pipe.GroupBy;
 import cascading.pipe.Pipe;
-import cascading.pipe.cogroup.OuterJoin;
+import cascading.pipe.joiner.OuterJoin;
 import cascading.pipe.CoGroup;
 
 import cascading.scheme.hadoop.SequenceFile;
@@ -72,10 +72,10 @@ import cascading.tuple.Fields;
 import cascading.tuple.TupleEntry;
 import cascading.tuple.TupleEntryCollector;
 
-import com.bixolabs.cascading.BaseSplitter;
-import com.bixolabs.cascading.HadoopUtils;
-import com.bixolabs.cascading.SplitterAssembly;
-import com.bixolabs.cascading.TupleLogger;
+import com.scaleunlimited.cascading.BaseSplitter;
+import com.scaleunlimited.cascading.hadoop.HadoopUtils;
+import com.scaleunlimited.cascading.SplitterAssembly;
+import com.scaleunlimited.cascading.TupleLogger;
 
 @SuppressWarnings("deprecation")
 public class DemoWebMiningWorkflow {
@@ -141,7 +141,7 @@ public class DemoWebMiningWorkflow {
             else
               numTasks = process.getCurrentNumReducers();
 
-            int taskNum = process.getCurrentTaskNum();
+            int taskNum = process.getCurrentSliceNum();
 
             context.limit = (long) Math.floor( (double) _limit / (double) numTasks );
 
@@ -216,12 +216,12 @@ public class DemoWebMiningWorkflow {
         // be specified via options.getAnalyzer. From this we'll get outlinks, page score, and
         // any results.
         
-        JobConf conf = HadoopUtils.getDefaultJobConf(CrawlConfig.CRAWL_STACKSIZE_KB);
+        JobConf conf = HadoopUtils.getDefaultJobConf();
         boolean isLocal = HadoopUtils.isJobLocal(conf);
         int numReducers = 1; // we always want to use a single reducer, to avoid contention
         conf.setNumReduceTasks(numReducers);
         conf.setInt("mapred.min.split.size", 64 * 1024 * 1024);
-        Properties props = HadoopUtils.getDefaultProperties(DemoWebMiningWorkflow.class, false, conf);
+        Map props = HadoopUtils.getDefaultProperties(DemoWebMiningWorkflow.class, false, conf);
         FileSystem fs = crawlDbPath.getFileSystem(conf);
 
         // Input : the crawldb
