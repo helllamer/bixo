@@ -70,7 +70,7 @@ public class ParsedDatum extends PayloadDatum {
     }
 
     public void setUrl(String url) {
-        _tupleEntry.set(URL_FN, url);
+        _tupleEntry.setString(URL_FN, url);
     }
 
     public String getHostAddress() {
@@ -78,7 +78,7 @@ public class ParsedDatum extends PayloadDatum {
     }
 
     public void setHostAddress(String hostAddress) {
-        _tupleEntry.set(HOST_ADDRESS_FN, hostAddress);
+        _tupleEntry.setString(HOST_ADDRESS_FN, hostAddress);
     }
 
     public String getParsedText() {
@@ -86,7 +86,7 @@ public class ParsedDatum extends PayloadDatum {
     }
 
     public void setParsedText(String parsedText) {
-        _tupleEntry.set(PARSED_TEXT_FN, parsedText);
+        _tupleEntry.setString(PARSED_TEXT_FN, parsedText);
     }
 
     public String getLanguage() {
@@ -94,7 +94,7 @@ public class ParsedDatum extends PayloadDatum {
     }
 
     public void setLanguage(String language) {
-        _tupleEntry.set(LANGUAGE_FN, language);
+        _tupleEntry.setString(LANGUAGE_FN, language);
     }
 
     public String getTitle() {
@@ -102,7 +102,7 @@ public class ParsedDatum extends PayloadDatum {
     }
 
     public void setTitle(String title) {
-        _tupleEntry.set(TITLE_FN, title);
+        _tupleEntry.setString(TITLE_FN, title);
     }
 
     public Outlink[] getOutlinks() {

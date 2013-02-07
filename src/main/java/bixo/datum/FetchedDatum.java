@@ -111,7 +111,7 @@ public class FetchedDatum extends PayloadDatum implements Serializable {
             throw new InvalidParameterException("baseUrl cannot be null");
         }
 
-        _tupleEntry.set(URL_FN, baseUrl);
+        _tupleEntry.setString(URL_FN, baseUrl);
     }
     
     public String getNewBaseUrl() {
@@ -119,7 +119,7 @@ public class FetchedDatum extends PayloadDatum implements Serializable {
     }
 
     public void setNewBaseUrl(String newBaseUrl) {
-        _tupleEntry.set(NEW_BASE_URL_FN, newBaseUrl);
+        _tupleEntry.setString(NEW_BASE_URL_FN, newBaseUrl);
     }
 
     public String getFetchedUrl() {
@@ -131,7 +131,7 @@ public class FetchedDatum extends PayloadDatum implements Serializable {
             throw new InvalidParameterException("fetchedUrl cannot be null");
         }
 
-        _tupleEntry.set(FETCHED_URL_FN, fetchedUrl);
+        _tupleEntry.setString(FETCHED_URL_FN, fetchedUrl);
     }
     
     public long getFetchTime() {
@@ -139,7 +139,7 @@ public class FetchedDatum extends PayloadDatum implements Serializable {
     }
     
     public void setFetchTime(long fetchTime) {
-        _tupleEntry.set(FETCH_TIME_FN, fetchTime);
+        _tupleEntry.setLong(FETCH_TIME_FN, fetchTime);
     }
 
     public byte[] getContentBytes() {
@@ -167,7 +167,7 @@ public class FetchedDatum extends PayloadDatum implements Serializable {
             throw new InvalidParameterException("contentType cannot be null");
         }
 
-        _tupleEntry.set(CONTENT_TYPE_FN, contentType);
+        _tupleEntry.setString(CONTENT_TYPE_FN, contentType);
     }
     
     public int getResponseRate() {
@@ -175,7 +175,7 @@ public class FetchedDatum extends PayloadDatum implements Serializable {
     }
 
     public void setResponseRate(int responseRate) {
-        _tupleEntry.set(RESPONSE_RATE_FN, responseRate);
+        _tupleEntry.setInteger(RESPONSE_RATE_FN, responseRate);
     }
     
     public int getNumRedirects() {
@@ -183,7 +183,7 @@ public class FetchedDatum extends PayloadDatum implements Serializable {
     }
 
     public void setNumRedirects(int numRedirects) {
-        _tupleEntry.set(NUM_REDIRECTS_FN, numRedirects);
+        _tupleEntry.setInteger(NUM_REDIRECTS_FN, numRedirects);
     }
 
     public String getHostAddress() {
@@ -191,7 +191,7 @@ public class FetchedDatum extends PayloadDatum implements Serializable {
     }
 
     public void setHostAddress(String hostAddress) {
-        _tupleEntry.set(HOST_ADDRESS_FN, hostAddress);
+        _tupleEntry.setString(HOST_ADDRESS_FN, hostAddress);
     }
 
     public HttpHeaders getHeaders() {

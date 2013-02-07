@@ -68,14 +68,13 @@ public class GroupedUrlDatum extends UrlDatum implements Serializable, Comparabl
     }
 
     public void setGroupKey(String groupKey) {
-        _tupleEntry.set(GROUP_KEY_FN, groupKey);
+        _tupleEntry.setString(GROUP_KEY_FN, groupKey);
     }
     
     public static Fields getGroupingField() {
         return new Fields(GROUP_KEY_FN);
     }
 
-    @Override
     public int compareTo(GroupedUrlDatum o) {
         // We don't care how these get ordered in the DiskQueue
         return 0;

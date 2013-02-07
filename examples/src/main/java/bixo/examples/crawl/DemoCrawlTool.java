@@ -227,10 +227,10 @@ public class DemoCrawlTool {
             } else {
                 patterns = RegexUrlFilter.getDefaultUrlFilterPatterns();
                 if (domain != null) {
-                    String domainPatterStr = "+(?i)^(http|https)://([a-z0-9]*\\.)*" + domain;
+                    String domainPatterStr = "+(?i)^https?://([a-z0-9]*\\.)*" + domain;
                     patterns.add(domainPatterStr);
                 } else {
-                    String protocolPatterStr = "+(?i)^(http|https)://*";
+                    String protocolPatterStr = "+(?i)^https?://*";
                     patterns.add(protocolPatterStr);
                     LOGGER.warn("Defaulting to basic url regex filtering (just suffix and protocol");
                 }

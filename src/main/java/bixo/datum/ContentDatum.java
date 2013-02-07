@@ -102,7 +102,7 @@ public class ContentDatum extends PayloadDatum implements Serializable {
             throw new InvalidParameterException("baseUrl cannot be null");
         }
 
-        _tupleEntry.set(BASE_URL_FN, baseUrl);
+        _tupleEntry.setString(BASE_URL_FN, baseUrl);
     }
     
     public String getFetchedUrl() {
@@ -114,7 +114,7 @@ public class ContentDatum extends PayloadDatum implements Serializable {
             throw new InvalidParameterException("fetchedUrl cannot be null");
         }
 
-        _tupleEntry.set(FETCHED_URL_FN, fetchedUrl);
+        _tupleEntry.setString(FETCHED_URL_FN, fetchedUrl);
     }
     
     public byte[] getContentBytes() {
@@ -142,7 +142,7 @@ public class ContentDatum extends PayloadDatum implements Serializable {
             throw new InvalidParameterException("contentType cannot be null");
         }
 
-        _tupleEntry.set(CONTENT_TYPE_FN, contentType);
+        _tupleEntry.setString(CONTENT_TYPE_FN, contentType);
     }
     
     public HttpHeaders getHeaders() {
@@ -162,7 +162,7 @@ public class ContentDatum extends PayloadDatum implements Serializable {
     }
 
     public void setHostAddress(String hostAddress) {
-        _tupleEntry.set(HOST_ADDRESS_FN, hostAddress);
+        _tupleEntry.setString(HOST_ADDRESS_FN, hostAddress);
     }
 
     @Override

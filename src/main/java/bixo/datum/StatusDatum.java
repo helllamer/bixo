@@ -82,7 +82,7 @@ public class StatusDatum extends PayloadDatum {
     }
 
     public void setUrl(String url) {
-        _tupleEntry.set(URL_FN, url);
+        _tupleEntry.setString(URL_FN, url);
     }
 
     public UrlStatus getStatus() {
@@ -118,7 +118,7 @@ public class StatusDatum extends PayloadDatum {
     }
     
     public void setStatusTime(long statusTime) {
-        _tupleEntry.set(STATUS_TIME_FN, statusTime);
+        _tupleEntry.setLong(STATUS_TIME_FN, statusTime);
     }
     
     public String getHostAddress() {
@@ -126,7 +126,7 @@ public class StatusDatum extends PayloadDatum {
     }
     
     public void setHostAddress(String hostAddress) {
-        _tupleEntry.set(HOST_ADDRESS_FN, hostAddress);
+        _tupleEntry.setString(HOST_ADDRESS_FN, hostAddress);
     }
 
 }
